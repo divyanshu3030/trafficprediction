@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Traffic Risk Predictor</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      line-height: 1.4;
+      color: #222;
+      background: #f3f6fc;
+      animation: fadeInBody 1s ease;
+    }
+
+    @keyframes fadeInBody {
+      0% {
+        opacity: 0
+      }
+
+      100% {
+        opacity: 1
+      }
+    }
+
+    header {
+      background: #0b74da;
+      color: white;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+      animation: slideDown 0.7s ease;
+    }
+
+    @keyframes slideDown {
+      0% {
+        transform: translateY(-40px);
+        opacity: 0
+      }
+
+      100% {
+        transform: translateY(0);
+        opacity: 1
+      }
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-left: 20px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      transition: 0.3s;
+      position: relative;
+    }
+
+    nav a:hover {
+      background: rgba(255, 255, 255, 0.25)
+    }
+
+    nav a.active {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -3px;
+      height: 2px;
+      width: 0;
+      background: white;
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+
+    nav a:hover::after {
+      width: 100%
+    }
+
+    nav a.active::after {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.7)
+    }
+
+    main {
+      max-width: 980px;
+      margin: 32px auto;
+      padding: 20px;
+      animation: fadeUp 1s ease;
+    }
+
+    @keyframes fadeUp {
+      0% {
+        transform: translateY(30px);
+        opacity: 0
+      }
+
+      100% {
+        transform: translateY(0);
+        opacity: 1
+      }
+    }
+
+    /* Slideshow */
+    .slideshow {
+      position: relative;
+      height: 330px;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 10px 34px rgba(7, 15, 30, 0.18);
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      filter: blur(6px);
+      animation: slideAnim 15s infinite;
+    }
+
+    .slide:nth-child(1) {
+      background-image: url('image1.jpeg');
+      animation-delay: 0s;
+    }
+
+    .slide:nth-child(2) {
+      background-image: url('image2.jpeg');
+      animation-delay: 5s;
+    }
+
+    .slide:nth-child(3) {
+      background-image: url('image3.jpeg');
+      animation-delay: 10s;
+    }
+
+    @keyframes slideAnim {
+      0% {
+        opacity: 0;
+        filter: blur(8px);
+        transform: scale(1.18) translateX(-60px)
+      }
+
+      10% {
+        opacity: 1;
+        filter: blur(2px);
+        transform: scale(1.10) translateX(0)
+      }
+
+      30% {
+        opacity: 1;
+        filter: blur(0);
+        transform: scale(1.04) translateX(20px)
+      }
+
+      40% {
+        opacity: 0;
+        filter: blur(6px);
+        transform: scale(1.15) translateX(60px)
+      }
+
+      100% {
+        opacity: 0
+      }
+    }
+
+    .info {
+      margin-top: 22px;
+      text-align: center;
+      padding: 22px;
+      border-radius: 12px;
+      background: white;
+      box-shadow: 0 4px 22px rgba(0, 0, 0, 0.08);
+      animation: fadeUp 1.2s ease;
+    }
+
+    .info h1 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      color: #0b74da
+    }
+
+    .info p {
+      max-width: 700px;
+      margin: 0 auto;
+      color: #444;
+      font-size: 1rem
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      margin-top: 22px
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      border: 2px solid #0b74da;
+      background: white;
+      color: #0b74da;
+      transition: 0.3s;
+      box-shadow: 0 0 0 rgba(11, 116, 218, 0.6);
+    }
+
+    .btn:hover {
+      background: #0b74da;
+      color: white;
+      transform: translateY(-4px);
+      box-shadow: 0 0 14px rgba(11, 116, 218, 0.6);
+    }
+
+    @media (max-width:640px) {
+      .slideshow {
+        height: 240px
+      }
+
+      nav a {
+        margin-left: 10px;
+        padding: 6px 8px
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div style="font-weight:700">Traffic Risk Predictor</div>
+    <nav>
+      <a href="#" class="active" aria-current="page">Home</a>
+      <a href="#about">About Us</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="slideshow" aria-hidden="false">
+      <div class="slide" role="img"></div>
+      <div class="slide" role="img"></div>
+      <div class="slide" role="img"></div>
+    </div>
+
+    <section id="about" class="info">
+      <h1>About Us</h1>
+      <p>
+        Our system analyzes real-time conditions to predict potential traffic risks.
+        By identifying unsafe patterns early, it helps prevent accidents before they occur.
+        Using smart machine-learning algorithms, the model delivers fast and reliable alerts.
+        Designed for safer roads, smarter travel, and better decision-making.
+      </p>
+
+      <div class="actions">
+        <a href="traffic.html" target="_self" class="btn">Traffic Risk Predictor</a>
+      </div>
+    </section>
+  </main>
+</body>
+
+</html>

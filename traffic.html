@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Risk Predictor</title>
+    <!-- Load Tailwind CSS for utility classes and responsiveness -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* --- Custom CSS for Aesthetics and Styling --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .input-field {
+            padding: 12px;
+            border: 2px solid #e0e7ff;
+            /* Light blue border */
+            border-radius: 10px;
+            background-color: #f9fbff;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #ef4444;
+            /* Red focus */
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+
+        .predict-button {
+            background-color: #ef4444;
+            /* Red */
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            transition: all 0.2s ease;
+        }
+
+        .predict-button:hover {
+            background-color: #dc2626;
+            /* Darker Red */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 768px) {
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen p-4 md:p-10">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800">
+                <span class="text-red-600">AI</span> Traffic Risk Predictor
+            </h1>
+            <p class="mt-2 text-lg text-gray-500">Assess the probability of an accident</p>
+        </header>
+
+        <!-- Input Form Card -->
+        <div class="card p-6 md:p-10 border-t-8 border-red-500">
+            <h2 class="text-2xl font-semibold mb-8 text-gray-700">Driving Conditions Input</h2>
+
+            <form id="predictionForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Numerical Inputs -->
+                <div>
+                    <label for="speedLimit" class="block text-sm font-medium text-gray-700 mb-1">Speed Limit
+                        (km/h)</label>
+                    <input type="number" id="speedLimit" value="80" required min="10" max="150"
+                        class="w-full input-field">
+                </div>
+                <div>
+                    <label for="driverAge" class="block text-sm font-medium text-gray-700 mb-1">Driver Age</label>
+                    <input type="number" id="driverAge" value="45" required min="18" max="100"
+                        class="w-full input-field">
+                </div>
+
+                <!-- Categorical Inputs -->
+                <div>
+                    <label for="stateName" class="block text-sm font-medium text-gray-700 mb-1">State Name</label>
+                    <select id="stateName" required class="w-full input-field">
+                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                        <option value="Assam">Assam</option>
+                        <option value="Bihar">Bihar</option>
+                        <option value="Chhattisgarh">Chhattisgarh</option>
+                        <option value="Goa">Goa</option>
+                        <option value="Gujarat">Gujarat</option>
+                        <option value="Haryana">Haryana</option>
+                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                        <option value="Jharkhand">Jharkhand</option>
+                        <option value="Karnataka">Karnataka</option>
+                        <option value="Kerala">Kerala</option>
+                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Manipur">Manipur</option>
+                        <option value="Meghalaya">Meghalaya</option>
+                        <option value="Mizoram">Mizoram</option>
+                        <option value="Nagaland">Nagaland</option>
+                        <option value="Odisha">Odisha</option>
+                        <option value="Punjab">Punjab</option>
+                        <option value="Rajasthan">Rajasthan</option>
+                        <option value="Sikkim">Sikkim</option>
+                        <option value="Tamil Nadu">Tamil Nadu</option>
+                        <option value="Telangana">Telangana</option>
+                        <option value="Tripura">Tripura</option>
+                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                        <option value="Uttarakhand">Uttarakhand</option>
+                        <option value="West Bengal">West Bengal</option>
+                        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                        <option value="Chandigarh">Chandigarh</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                        <option value="Ladakh">Ladakh</option>
+                        <option value="Lakshadweep">Lakshadweep</option>
+                        <option value="Puducherry">Puducherry</option>
+
+                    </select>
+                </div>
+                <div>
+                    <label for="vehicleType" class="block text-sm font-medium text-gray-700 mb-1">Vehicle Type
+                        Involved</label>
+                    <select id="vehicleType" required class="w-full input-field">
+                        <option value="Car">Car</option>
+                        <option value="Truck">Truck</option>
+                        <option value="Bus">Bus</option>
+                        <option value="Cycle">Cycle</option>
+                        <option value="Pedestrian">Pedestrian</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="weather" class="block text-sm font-medium text-gray-700 mb-1">Weather Conditions</label>
+                    <select id="weather" required class="w-full input-field">
+                        <option value="Clear">Clear</option>
+                        <option value="Rainy">Rainy</option>
+                        <option value="Foggy">Foggy</option>
+                        <option value="Hazy">Hazy</option>
+                        <option value="Snow">Snow</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="roadCondition" class="block text-sm font-medium text-gray-700 mb-1">Road
+                        Condition</label>
+                    <select id="roadCondition" required class="w-full input-field">
+                        <option value="Dry">Dry</option>
+                        <option value="Wet">Wet</option>
+                        <option value="Damaged">Damaged</option>
+                        <option value="Under Construction">Under Construction</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="trafficControl" class="block text-sm font-medium text-gray-700 mb-1">Traffic Control
+                        Presence</label>
+                    <select id="trafficControl" required class="w-full input-field">
+                        <option value="Signs">Signs</option>
+                        <option value="Signals">Signals</option>
+                        <option value="Police Checkpost">Police Checkpost</option>
+                        <option value="None">None</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="driverGender" class="block text-sm font-medium text-gray-700 mb-1">Driver Gender</label>
+                    <select id="driverGender" required class="w-full input-field">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="alcohol" class="block text-sm font-medium text-gray-700 mb-1">Alcohol
+                        Involvement</label>
+                    <select id="alcohol" required class="w-full input-field">
+                        <option value="No">No</option>
+                        <option value="Yes">Yes</option>
+                    </select>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="md:col-span-2 mt-4">
+                    <button type="submit"
+                        class="predict-button w-full py-3 px-4 text-white font-bold text-lg rounded-xl">
+                        PREDICT ACCIDENT RISK
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Prediction Result Card -->
+        <div id="resultCard" class="card mt-8 p-6 md:p-8 transition-all duration-500 hidden"
+            style="border-top-width: 4px;">
+            <h2 class="text-2xl font-semibold mb-4 text-gray-800 flex items-center">
+                <span id="resultIcon" class="mr-3 text-3xl"></span> Prediction Result
+            </h2>
+            <div id="riskText" class="text-3xl font-extrabold mb-2"></div>
+            <p class="text-gray-600">Estimated risk based on the conditions you entered:</p>
+            <div class="mt-4">
+                <span id="probabilityText" class="text-5xl font-extrabold"></span>
+                <span class="text-xl text-gray-500">% Probability of Accident</span>
+            </div>
+            <p class="mt-6 text-sm text-gray-500 border-t pt-4">Note: This is a mock model simulation. The true accuracy
+                could be achieved by loading the exact model parameters from the actual training data.</p>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // JAVASCRIPT LOGIC - Python ML Pipeline Simulation (Hardcoded)
+        // =========================================================================
+
+        // 1. Python से निकाले गए पैरामीटर (Hardcoded Mappings और Scaler Values)
+        const FEATURE_ORDER = [
+            'Speed Limit (km/h)', 'Driver Age', 'State Name', 'Vehicle Type Involved',
+            'Weather Conditions', 'Road Condition', 'Traffic Control Presence',
+            'Driver Gender', 'Alcohol Involvement'
+        ];
+
+        // यह आपके StandardScaler.mean_ और StandardScaler.scale_ (std) का डेटा है
+        const SCALER_PARAMS = {
+            'Speed Limit (km/h)': { mean: 80.5, std: 25.0 },
+            'Driver Age': { mean: 45.0, std: 15.0 },
+
+            // Categorical features के लिए, यह encoding के बाद का mean/std है
+            'State Name': { mean: 18.0, std: 10.0 },
+            'Vehicle Type Involved': { mean: 2.5, std: 1.5 },
+            'Weather Conditions': { mean: 1.5, std: 1.0 },
+            'Road Condition': { mean: 1.5, std: 1.0 },
+            'Traffic Control Presence': { mean: 1.5, std: 1.0 },
+            'Driver Gender': { mean: 0.5, std: 0.5 },
+            'Alcohol Involvement': { mean: 0.2, std: 0.4 },
+        };
+
+        // यह आपके LabelEncoder mappings (Text to Number) का डेटा है
+        const LABEL_MAPPINGS = {
+            'State Name': { 'Uttar Pradesh': 20, 'Maharashtra': 10, 'Tamil Nadu': 18, 'Bihar': 5, 'Other': 2 },
+            'Vehicle Type Involved': { 'Car': 1, 'Truck': 5, 'Bus': 0, 'Cycle': 2, 'Pedestrian': 4 },
+            'Weather Conditions': { 'Clear': 0, 'Rainy': 2, 'Foggy': 1, 'Hazy': 1, 'Snow': 3 },
+            'Road Condition': { 'Dry': 0, 'Wet': 3, 'Damaged': 1, 'Under Construction': 2 },
+            'Traffic Control Presence': { 'Signs': 2, 'Signals': 1, 'Police Checkpost': 0, 'None': 3 },
+            'Driver Gender': { 'Male': 1, 'Female': 0 },
+            'Alcohol Involvement': { 'No': 0, 'Yes': 1 },
+        };
+
+        // 2. Preprocessing Functions
+
+        function encodeFeature(featureName, value) {
+            const mapping = LABEL_MAPPINGS[featureName];
+            // Encode the value. Use 0 if the category is not found.
+            return mapping.hasOwnProperty(value) ? mapping[value] : 0;
+        }
+
+        function scaleFeature(featureName, value) {
+            const { mean, std } = SCALER_PARAMS[featureName];
+            if (std === 0 || isNaN(std)) return 0;
+            return (value - mean) / std;
+        }
+
+        // 3. Mock Prediction Logic (Random Forest/LSTM का Simulation)
+
+        function getMockPrediction(scaledFeatures) {
+            // Scaled features array: [Speed, Age, State, Vehicle, Weather, Road, Control, Gender, Alcohol]
+
+            const speedScaled = scaledFeatures[0];
+            const driverAgeScaled = scaledFeatures[1];
+            const weatherScaled = scaledFeatures[4];
+            const roadScaled = scaledFeatures[5];
+            const alcoholEncoded = scaledFeatures[8]; // This is the scaled value of 0 or 1
+
+            let risk = 0.35; // Base risk probability (35%)
+
+            // 1. Age (U-shaped penalty: very young/old are high risk)
+            // Use Math.pow(driverAgeScaled, 2) to increase penalty for values far from the mean (0)
+            risk += Math.min(Math.pow(driverAgeScaled, 2) * 0.05, 0.15);
+
+            // 2. Alcohol Involvement (High Penalty)
+            // Alcohol is encoded as 1 (Yes) or 0 (No). A scaled value > 0 indicates 'Yes'.
+            if (alcoholEncoded > 0) {
+                risk += 0.30;
+            }
+
+            // 3. Speed (Penalty for very high speed, scaled value > 1.5 means very fast)
+            if (speedScaled > 1.5) {
+                risk += (speedScaled * 0.10);
+            }
+
+            // 4. Bad Weather/Road Conditions (Scaled value > 1 indicates bad condition)
+            if (weatherScaled > 1.0 || roadScaled > 1.0) {
+                risk += 0.15;
+            }
+
+            // Ensure probability is between 1% and 99%
+            risk = Math.max(0.01, Math.min(0.99, risk));
+
+            return risk;
+        }
+
+
+        // 4. Event Listener and UI Update
+        document.getElementById('predictionForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const inputData = {};
+
+            // 1. Collect Raw Input Data
+            inputData['Speed Limit (km/h)'] = parseFloat(form.elements.speedLimit.value);
+            inputData['Driver Age'] = parseFloat(form.elements.driverAge.value);
+            inputData['State Name'] = form.elements.stateName.value;
+            inputData['Vehicle Type Involved'] = form.elements.vehicleType.value;
+            inputData['Weather Conditions'] = form.elements.weather.value;
+            inputData['Road Condition'] = form.elements.roadCondition.value;
+            inputData['Traffic Control Presence'] = form.elements.trafficControl.value;
+            inputData['Driver Gender'] = form.elements.driverGender.value;
+            inputData['Alcohol Involvement'] = form.elements.alcohol.value;
+
+            // 2. Encode and Scale the Data
+            const scaledFeatures = [];
+
+            FEATURE_ORDER.forEach(feature => {
+                let value = inputData[feature];
+
+                if (LABEL_MAPPINGS.hasOwnProperty(feature)) {
+                    // Step A: Encode categorical features (Text to Number)
+                    value = encodeFeature(feature, value);
+                }
+
+                // Step B: Scale the feature (Number to Z-score)
+                const scaledValue = scaleFeature(feature, value);
+                scaledFeatures.push(scaledValue);
+            });
+
+            // 3. Get Mock Prediction
+            const probability = getMockPrediction(scaledFeatures);
+            const probabilityPercent = (probability * 100).toFixed(2);
+
+            // 4. Update UI
+            const resultCard = document.getElementById('resultCard');
+            const riskText = document.getElementById('riskText');
+            const probabilityText = document.getElementById('probabilityText');
+            const resultIcon = document.getElementById('resultIcon');
+
+            probabilityText.textContent = probabilityPercent;
+            resultCard.classList.remove('hidden');
+            resultCard.scrollIntoView({ behavior: 'smooth' });
+
+            // Apply styling based on risk level
+            if (probability > 0.60) {
+                // HIGH RISK (Red)
+                riskText.textContent = "HIGH RISK - Take Immediate Caution!";
+                resultCard.style.borderColor = '#dc2626';
+                resultCard.className = "card mt-8 p-6 md:p-8 transition-all duration-500 bg-red-50";
+                probabilityText.className = "text-5xl font-extrabold text-red-600";
+                resultIcon.innerHTML = "⚠️";
+            } else if (probability > 0.30) {
+                // MODERATE RISK (Yellow/Orange)
+                riskText.textContent = "Moderate Risk - Be Alert!";
+                resultCard.style.borderColor = '#fbbf24';
+                resultCard.className = "card mt-8 p-6 md:p-8 transition-all duration-500 bg-yellow-50";
+                probabilityText.className = "text-5xl font-extrabold text-yellow-600";
+                resultIcon.innerHTML = "🚸";
+            } else {
+                // LOW RISK (Green)
+                riskText.textContent = "Low Risk - Drive Safely!";
+                resultCard.style.borderColor = '#10b981';
+                resultCard.className = "card mt-8 p-6 md:p-8 transition-all duration-500 bg-green-50";
+                probabilityText.className = "text-5xl font-extrabold text-green-600";
+                resultIcon.innerHTML = "✅";
+            }
+        });
+    </script>
+</body>
+
+</html>
